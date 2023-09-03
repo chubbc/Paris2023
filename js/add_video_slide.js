@@ -11,11 +11,12 @@ function loadFile(filePath) {
   return result;
 }
 frags = loadFile(`video_slides/${slide}.txt`)
+// 161c20
 document.write(`
 <section 
 	data-background-video="./video_slides/${slide}.mp4" 
 	data-background-size="contain"
-	data-background-color="#161c20" 
+	data-background-color="#101518" 
 	id="vid" 
 	type="videoslide"
 >
