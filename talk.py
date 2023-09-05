@@ -3166,7 +3166,7 @@ class Lec2_2(SlideScene):
         heading.set_opacity(1)
         self.slide_break()
 
-        subsec = 5
+        subsec = -1
         # 1     Rayleigh quotient
         # 2     local Ham and MPO
         # 3     environments
@@ -3653,7 +3653,6 @@ class Lec2_2(SlideScene):
 
             self.play(FadeOut(dmrg))
             self.slide_break()
-            return
 
         if subsec==5 or subsec==-1:
 
@@ -3757,7 +3756,7 @@ class Lec2_2(SlideScene):
 
 class Lec2_3(SlideScene):
     def construct(self):
-        tocindex=(1,2)
+        tocindex=(1,3)
         toc.set_opacity(0.25)
         toc[tocindex[0]].set_opacity(1)
         toc.save_state()
@@ -3770,7 +3769,7 @@ class Lec2_3(SlideScene):
         heading.set_opacity(1)
         self.slide_break()
 
-        subsec = 1
+        subsec = -1
         # 1     Suzuki trotter
         # 2     Real/imaginary time
         # 3     TEBD
@@ -3783,15 +3782,350 @@ class Lec2_3(SlideScene):
         # 10    ?
 
         if subsec==1 or subsec==-1:
-            # Suzuk-Trotter and exponential product formulae (stutter step etc.)
-            # Fractal diagrams?
-            pass
+            # Suzuk-Trotter
+            suzuki1=MyMathTex("U(t):=e^{-i","H","t}")
+
+            n=10
+            suzuki2=VGroup(
+                VGroup(
+                    *[Circle(0.1,fill_opacity=1,color=WHITE).shift(i*RIGHT) for i in range(0,n)],
+                ),
+                VGroup(
+                    *[Ellipse(width=1.75,height=0.75,color=TEN_RED).shift((i+0.5)*RIGHT) for i in range(0,n,2)],
+                ),
+                VGroup(
+                    *[Ellipse(width=1.75,height=0.75,color=TEN_YELLOW).shift((i+0.5)*RIGHT) for i in range(1,n-1,2)],
+                ),
+                MyMathTex("H=A+B").shift((n-1)*RIGHT/2+DOWN),
+            ).shift(1.5*UP+(n-1)*LEFT/2)
+            suzuki2[-1][0][2].set_color(RED)
+            suzuki2[-1][0][4].set_color(TEN_YELLOW)
+
+            suzuki3=MyMathTex("U(t):=e^{-i",r"(A+B)",r"t}")
+            suzuki3[1][1].set_color(RED)
+            suzuki3[1][3].set_color(TEN_YELLOW)
+
+            self.play(FadeIn(suzuki1))
+            self.slide_break()
+            self.play(suzuki1.animate.shift(1*DOWN))
+            suzuki3.move_to(suzuki1)
+            self.slide_break()
+
+            self.play(FadeIn(suzuki2[0]))
+            self.slide_break()
+
+            self.play(Write(suzuki2[1]))
+            self.play(Write(suzuki2[2]))
+            self.slide_break()
+
+            self.play(Write(suzuki2[3]))
+            self.slide_break()
+
+            self.play(ReplacementTransform(suzuki1,suzuki3))
+            self.slide_break()
+
+            suzuki4=MyMathTex("U(t):=e^{-i",r"(A+B)",r"t}=","e^{-itA}","e^{-itB}","+O(t^","2",")")
+            suzuki4[1][1].set_color(RED)
+            suzuki4[1][3].set_color(TEN_YELLOW)
+            suzuki4[3].set_color(RED)
+            suzuki4[4].set_color(TEN_YELLOW)
+            suzuki4.move_to(DOWN)
+
+            self.play(ReplacementTransform(suzuki3,suzuki4[:3]))
+            self.play(FadeIn(suzuki4[3:]))
+            self.slide_break()
+
+            suzuki5=MyMathTex("U(t):=e^{-i",r"(A+B)",r"t}=","e^{-itA/2}","e^{-itB}","e^{-itA/2}","+O(t^","3",")")
+            suzuki5[1][1].set_color(RED)
+            suzuki5[1][3].set_color(TEN_YELLOW)
+            suzuki5[3].set_color(RED)
+            suzuki5[4].set_color(TEN_YELLOW)
+            suzuki5[5].set_color(RED)
+            suzuki5.move_to(DOWN)
+
+            self.play(
+                ReplacementTransform(suzuki4[:5],suzuki5[:5]),
+                TransformFromCopy(suzuki4[3],suzuki5[5]),
+                ReplacementTransform(suzuki4[5:],suzuki5[6:]),
+            )
+            self.slide_break()
+
+            suzuki6=MyMathTex(
+                "U(t)=U(t/n)^n=",
+                "e^{-iAt/n}",
+                "e^{-iBt/n}",
+                "\cdots ",
+                "e^{-iBt/n}",
+                "+O(1/n^2)"
+            ).move_to(2*DOWN)
+            suzuki6[1].set_color(RED)
+            suzuki6[2].set_color(TEN_YELLOW)
+            suzuki6[4].set_color(TEN_YELLOW)
+            self.play(FadeIn(suzuki6))
+            self.slide_break()
+
+            suzuki7=MyMathTex(
+                "U(t)=U(t/n)^n=",
+                "e^{-iAt/2n}",
+                "e^{-iBt/n}",
+                "\cdots ",
+                "e^{-iBt/n}",
+                "e^{-iAt/2n}",
+                "+O(1/n^3)"
+            )
+            suzuki7[1].set_color(RED)
+            suzuki7[2].set_color(TEN_YELLOW)
+            suzuki7[4].set_color(TEN_YELLOW)
+            suzuki7[5].set_color(RED)
+            suzuki7.move_to(2*DOWN)
+            self.play(
+                ReplacementTransform(suzuki6[:-1],suzuki7[:-2]),
+                FadeIn(suzuki7[-2]),
+                ReplacementTransform(suzuki6[-1],suzuki7[-1]),
+            )
+            self.slide_break()
+
+            self.play(FadeOut(suzuki5,shift=UP/2),suzuki7.animate.shift(UP*3/2))
+            self.slide_break()
+
+            suzuki8=VGroup(
+                MyMathTex("e^{-iA\delta}=e^{-iA_1\delta}e^{-iA_3\delta}e^{-iA_5\delta}\cdots").set_color(RED),
+                MyMathTex("e^{-iB\delta}=e^{-iB_2\delta}e^{-iB_4\delta}e^{-iB_6\delta}\cdots").set_color(TEN_YELLOW),
+            ).arrange(DOWN).shift(2*DOWN)
+            self.play(FadeIn(suzuki8))
+            self.slide_break()
+
+            self.play(*[FadeOut(mob) for mob in self.mobjects if mob!=toc and mob!=footer])
+            self.slide_break()
+
         if subsec==2 or subsec==-1:
-            # Real/imaginary time evolution
-            pass
+
+            imagtime=VGroup()
+
+            imagtime += MyMathTex("U(","t",")=e^{-iH","t}")
+            imagtime += MyMathTex("U(",r"-i\tau",")=e^{-iH",r"(-i\tau)}")
+            imagtime += MyMathTex(r"U(-i\tau)=e^{-","i","H","(-i",r"\tau",")}")
+            imagtime += MyMathTex(r"U(-i\tau)=e^{-","H",r"\tau}")
+
+            self.play(Write(imagtime[0]))
+            self.slide_break()
+            self.play(ReplacementTransform(imagtime[0],imagtime[1]))
+            self.slide_break()
+            self.remove(imagtime[1])
+            self.add(imagtime[2])
+
+            self.play(
+                ReplacementTransform(imagtime[2][0],imagtime[3][0]),
+                FadeOut(imagtime[2][1]),
+                ReplacementTransform(imagtime[2][2],imagtime[3][1]),
+                FadeOut(imagtime[2][3]),
+                ReplacementTransform(imagtime[2][4],imagtime[3][2]),
+                FadeOut(imagtime[2][5]),
+            )
+            self.slide_break()
+
+            self.play(imagtime[3].animate.shift(UP*3/4))
+            self.slide_break()
+
+            imagtime+=MyMathTex(
+                r"\ket\psi&=c_1\ket{E_1}+c_2\ket{E_2}+c_3\ket{E_3}+\cdots\\",
+                r"e^{-H\tau}\ket\psi&=",
+                r"c_1e^{-E_1\tau}\ket{E_1}",
+                r"+c_2e^{-E_1\tau}\ket{E_2}",
+                r"+c_3e^{-E_1\tau}\ket{E_3}+",
+                r"\cdots",
+                ).shift(DOWN)
+
+            self.play(FadeIn(imagtime[-1][0]))
+            self.slide_break()
+            self.play(FadeIn(imagtime[-1][1:]))
+            self.slide_break()
+
+            self.play(*[FadeOut(mob) for mob in self.mobjects if mob!=toc and mob!=footer])
+            self.slide_break()
+
         if subsec==3 or subsec==-1:
-            # TEBD
-            pass
+            tebd1=MyMathTex(
+                "\cdots ",
+                r"e^{-i\delta A} ",
+                r"e^{-i\delta B} ",
+                r"e^{-i\delta A} ",
+                r"e^{-i\delta B} ",
+                r"\ket \psi",
+            )
+            tebd1[1::2].set_color(RED)
+            tebd1[2::2].set_color(TEN_YELLOW)
+            tebd1[-1].set_color(BLUE)
+            self.play(FadeIn(tebd1))
+            self.slide_break()
+
+            n=8
+            tebd2=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(3*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(2*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(1*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(0*UP),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+3*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+2*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(tebd1.animate.shift(2.25*UP))
+            tebd2.save_state()
+            tebd2.set_color(BG)
+            self.play(Restore(tebd2))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(3*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(2*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(UP/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+3*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+2*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(3*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(2*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+3*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+2*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(3*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(UP/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+3*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(3*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW).shift(i*RIGHT+3*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(UP/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(4*UP),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT+4*UP) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(UP/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                Line(ORIGIN,(n-1)*RIGHT).shift(DOWN/16),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_GREEN).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,4.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(3*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            tebd3=VGroup(
+                *[Line(ORIGIN,.75*UP).shift(i*RIGHT) for i in range(n)],
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                Line(ORIGIN,(n-1)*RIGHT).shift(ORIGIN),
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+                *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT) for i in range(n)],
+            ).scale(7/8).shift(1*DOWN+(n-1)*LEFT/2)
+            self.play(Transform(tebd2,tebd3))
+            self.slide_break()
+
+            self.play(FadeOut(tebd1),tebd2.animate.set_color(BG))
+            self.remove(tebd2)
+            self.slide_break()
         if subsec==4 or subsec==-1:
             pass
         if subsec==5 or subsec==-1:
