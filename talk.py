@@ -2815,13 +2815,13 @@ class Lec2_1(SlideScene):
                 FadeTransform(trunc2[2],trunc6[2]),
             )
             self.slide_break()
-
             trunc7=trunc6[2].copy().move_to(ORIGIN).scale(1.5)
             self.play(
                 FadeOut(trunc6[0]),
                 FadeOut(trunc6[1]),
                 ReplacementTransform(trunc6[2],trunc7),
             )
+            self.slide_break()
             trunc8=VGroup(
                 VGroup(
                     OffsetBezier(UP/8,LEFT/4,
@@ -2857,7 +2857,42 @@ class Lec2_1(SlideScene):
             ).move_to(ORIGIN).scale(1.5)
             self.play(*[ReplacementTransform(trunc7[i],trunc8[i]) for i in range(len(trunc7))])
             self.slide_break()
-            self.play(FadeOut(trunc8))
+            trunc9=VGroup(
+                VGroup(
+                    OffsetBezier(UP/8,LEFT/4,
+                        UP*3/4+LEFT/4,DOWN/4),
+                    Polygon(DOWN/4,UP/4,RIGHT*3/8, color=WHITE,fill_opacity=1,fill_color=TEN_GREEN),
+                    Line(RIGHT*3/8,RIGHT*3/4),
+                ),
+                VGroup(
+                    OffsetBezier(UP/8,LEFT/4,
+                        UP*3/4+LEFT/4,DOWN/4),
+                    Polygon(DOWN/4,UP/4,RIGHT*3/8, color=WHITE,fill_opacity=1,fill_color=TEN_GREEN),
+                    Line(RIGHT*3/8,RIGHT*3/4),
+                ).shift(RIGHT*3/4),
+                VGroup(
+                    OffsetBezier(UP/8,LEFT/4,
+                        UP*3/4+LEFT/4,DOWN/4),
+                    Polygon(DOWN/4,UP/4,RIGHT*3/8, color=WHITE,fill_opacity=1,fill_color=TEN_GREEN),
+                    Line(RIGHT*3/8,RIGHT*3/4),
+                ).shift(RIGHT*6/4),
+                VGroup(
+                    OffsetBezier(UP/8,LEFT/4,
+                        UP*3/4+LEFT/4,DOWN/4),
+                    Polygon(DOWN/4,UP/4,RIGHT*3/8, color=WHITE,fill_opacity=1,fill_color=TEN_GREEN),
+                    Line(RIGHT*3/8,RIGHT*3/4),
+                ).shift(RIGHT*9/4),
+                Circle(1/8,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(RIGHT*25/8),
+                VGroup(
+                    OffsetBezier(UP/8,RIGHT/4,
+                        UP*3/4+RIGHT/4,DOWN/4),
+                    Polygon(DOWN/4,UP/4,LEFT*3/8, color=WHITE,fill_opacity=1,fill_color=TEN_YELLOW),
+                    Line(LEFT*3/8,LEFT*3/4),
+                ).shift((.75*5+1/4)*RIGHT),
+            ).move_to(ORIGIN).scale(1.5)
+            self.play(*[ReplacementTransform(trunc8[i],trunc9[i]) for i in range(len(trunc8))])
+            self.slide_break()
+            self.play(FadeOut(trunc9))
             self.slide_break()
         if subsec==5 or subsec==-1:
             # vidal
@@ -3098,7 +3133,7 @@ class Lec2_1(SlideScene):
                         MyTex(r"\textbullet~Sample from thermal states"),
                         MyTex(r"\textbullet~Approximate ground state"),
                     ),
-                    MyMathTex(r"\ket\Lambda \approx \min_{\psi} \braopket{\psi}{H}{\psi}"),
+                    MyMathTex(r"\ket\Lambda \approx \mathrm{arg\,min}_{\psi} \braopket{\psi}{H}{\psi}"),
                     MyTex(r"DMRG"),
                 ).arrange(DOWN),
                 VGroup(
@@ -3181,21 +3216,14 @@ class Lec2_2(SlideScene):
         if subsec==1 or subsec==-1:
 
             rayleigh1=MyMathTex(
-                r"\min_{\psi}",r"&~~~\braopket \psi H \psi\\~\\",
+                r"\mathrm{arg\,min}_{\psi}",r"&~~~\braopket \psi H \psi\\~\\",
                 r"\text{where}",r"&~~~\braket\psi\psi",r"=1,\\",
                 r"&~~~\text{BD}(\ket \psi)\leq \chi",
             )
             rayleigh2=MyMathTex(
-                r"\min_{\psi}",r"&~~~{\braopket \psi H \psi ", r"\over", r"\braket\psi\psi}\\~\\",
+                r"\mathrm{arg\,min}_{\psi}",r"&~~~{\braopket \psi H \psi ", r"\over", r"\braket\psi\psi}\\~\\",
                 r"\text{where}",r"&~~~\text{BD}(\ket \psi)\leq \chi",
             )
-
-            # i=3
-            # self.add(rayleigh2[i])
-            # self.add(index_labels(rayleigh2[i]))
-
-
-            # return
 
             self.play(Write(rayleigh1[:2]))
             self.slide_break()
@@ -3312,8 +3340,34 @@ class Lec2_2(SlideScene):
         if subsec==3 or subsec==-1:
             # environment
 
+            env00=MyMathTex(
+                r"\langle ",
+                r"\psi ",
+                r"| ",
+                r"H ",
+                r"| ",
+                r"\psi ",
+                r"\rangle ",
+            ).scale(2)
+
             n=6
             k=2
+            env0=VGroup(
+                VGroup(
+                    *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT+UP) for i in range(n)],
+                    *[Line(RIGHT/4,RIGHT*3/4).shift(i*RIGHT+UP) for i in range(n-1)],
+                ),
+                VGroup(
+                    *[Polygon(UP/3,RIGHT/3,DOWN/3,LEFT/3,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT) for i in range(n)],
+                    *[Line(RIGHT/3,RIGHT*2/3).shift(i*RIGHT) for i in range(n-1)],
+                    *[Line(UP/3,UP*3/4).shift(i*RIGHT) for i in range(n)],
+                    *[Line(DOWN/3,DOWN*3/4).shift(i*RIGHT) for i in range(n)],
+                ),
+                VGroup(
+                    *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT+DOWN) for i in range(n)],
+                    *[Line(RIGHT/4,RIGHT*3/4).shift(i*RIGHT+DOWN) for i in range(n-1)],
+                ),
+            )
             env1=VGroup(
                 *[Square(0.5,color=WHITE,fill_opacity=1,fill_color=TEN_BLUE).shift(i*RIGHT+UP) for i in range(n) if i!=k],
                 *[Polygon(UP/3,RIGHT/3,DOWN/3,LEFT/3,color=WHITE,fill_opacity=1,fill_color=TEN_RED).shift(i*RIGHT) for i in range(n)],
@@ -3354,11 +3408,29 @@ class Lec2_2(SlideScene):
                 ).shift(k*RIGHT),
             )
 
+            env0.move_to(ORIGIN)
             env1.move_to(ORIGIN)
             env2.move_to(ORIGIN)
 
-            self.play(FadeIn(env1))
+            self.play(Write(env00))
             self.slide_break()
+            self.play(
+                env00[1].animate.set_color(BLUE),
+                env00[3].animate.set_color(RED),
+                env00[5].animate.set_color(BLUE),
+            )
+            self.play(
+                Rotate(env00,angle=-TAU/4)
+            )
+            self.slide_break()
+            self.play(
+                ReplacementTransform(env00[1],env0[0]),
+                ReplacementTransform(env00[3],env0[1]),
+                ReplacementTransform(env00[5],env0[2]),
+                FadeOut(env00[0::2]),
+            )
+            self.remove(*env0)
+            self.add(env1)
             self.play(ReplacementTransform(env1,env2))
             self.slide_break()
 
